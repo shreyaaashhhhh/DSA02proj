@@ -27,9 +27,16 @@ public class Main_page {
 
     public static void main(String[] args) {
 
+        long startTime = System.currentTimeMillis();
+
         Main_page obj = new Main_page();
 
         obj.showMenu();
+
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("\nLoading Time: " +
+                (endTime - startTime) + " ms");
     }
 
     public void showMenu() {
