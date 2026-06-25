@@ -1,0 +1,5 @@
+shivam BOUGHT wipro Quantity 10 Amount 5400
+shivam BOUGHT vedl Quantity 30 Amount 13950
+Srivatsh BOUGHT wipro Quantity 30 Amount 16200
+Srivatsh SOLD wipro Quantity 10
+shivam BOUGHT titan Quantity 10 Amount 35500

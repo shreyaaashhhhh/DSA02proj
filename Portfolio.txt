@@ -1,0 +1,4 @@
+shivam,wipro,10,540
+shivam,vedl,30,465
+Srivatsh,wipro,20,540
+shivam,titan,10,3550

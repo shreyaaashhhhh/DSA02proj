@@ -1,0 +1,283 @@
+package STOCK;
+
+import java.util.Scanner;
+import UTIL.Input;
+
+public class UpdateStockPrice {
+
+    // DARK THEME COLORS
+    public static final String RESET = "\u001B[0m";
+
+    public static final String BRIGHT_CYAN = "\u001B[96m";
+
+    public static final String BRIGHT_GREEN = "\u001B[92m";
+
+    public static final String BRIGHT_RED = "\u001B[91m";
+
+    public static final String BRIGHT_YELLOW = "\u001B[93m";
+
+    public static final String BRIGHT_WHITE = "\u001B[97m";
+
+    public static final String BRIGHT_BLUE = "\u001B[94m";
+
+    public void update() {
+
+        Scanner sc = Input.getScanner();
+
+        try {
+
+            StockRepository repository =
+                    new StockRepository();
+
+            BTree tree =
+                    repository.loadStockTree();
+
+            StockRecord stocks[] =
+                    tree.toArray();
+
+            // HEADER
+            System.out.println("\n");
+
+            System.out.println(BRIGHT_CYAN);
+
+            System.out.println(
+                    "====================================================");
+
+            System.out.println(
+                    "                UPDATE STOCK PRICE");
+
+            System.out.println(
+                    "====================================================");
+
+            System.out.println(RESET);
+
+            if(tree.size() == 0) {
+
+                System.out.println(BRIGHT_RED);
+
+                System.out.println(
+                        "\n====================================================");
+
+                System.out.println(
+                        "               NO STOCKS AVAILABLE");
+
+                System.out.println(
+                        "====================================================");
+
+                System.out.println(RESET);
+
+                return;
+            }
+
+            // TABLE HEADER
+            System.out.println(BRIGHT_YELLOW);
+
+            System.out.printf(
+                    "%-25s %-18s %-18s\n",
+                    "STOCK NAME",
+                    "OLD PRICE",
+                    "CURRENT PRICE");
+
+            System.out.println(
+                    "----------------------------------------------------");
+
+            System.out.println(RESET);
+
+            // DISPLAY STOCKS FROM B-TREE
+            for(int i = 0; i < stocks.length; i++) {
+
+                System.out.println(BRIGHT_WHITE);
+
+                System.out.printf(
+                        "%-25s Rs.%-15d Rs.%-15d\n",
+                        stocks[i].stockName,
+                        stocks[i].oldPrice,
+                        stocks[i].currentPrice);
+
+                System.out.println(RESET);
+            }
+
+            String stockName;
+
+            int newPrice;
+
+            // INPUT STOCK NAME
+            System.out.print(BRIGHT_YELLOW +
+                    "\n   Enter Stock Name To Update : "
+                    + RESET);
+
+            stockName = sc.nextLine();
+
+            // INPUT NEW PRICE
+            System.out.print(BRIGHT_YELLOW +
+                    "   Enter New Price : Rs."
+                    + RESET);
+
+            newPrice = sc.nextInt();
+
+            StockRecord stock =
+                    tree.search(stockName);
+
+            if(stock != null) {
+
+                int currentPrice =
+                        stock.currentPrice;
+
+                stock.oldPrice =
+                        currentPrice;
+
+                stock.currentPrice =
+                        newPrice;
+
+                if(newPrice > stock.highestPrice) {
+
+                    stock.highestPrice =
+                            newPrice;
+                }
+
+                repository.saveStocks(tree);
+
+                int difference =
+                        newPrice - currentPrice;
+
+                double growth =
+                        ((double) difference
+                        / currentPrice) * 100;
+
+                // REPORT HEADER
+                System.out.println(BRIGHT_CYAN);
+
+                System.out.println(
+                        "\n====================================================");
+
+                System.out.println(
+                        "              STOCK UPDATE REPORT");
+
+                System.out.println(
+                        "====================================================");
+
+                System.out.println(RESET);
+
+                // STOCK DETAILS
+                System.out.println(BRIGHT_WHITE);
+
+                System.out.println(
+                        "\n   Stock Name      : "
+                        + stock.stockName);
+
+                System.out.println(
+                        "   Previous Price  : Rs."
+                        + currentPrice);
+
+                System.out.println(
+                        "   Updated Price   : Rs."
+                        + newPrice);
+
+                // POSITIVE GROWTH
+                if(difference > 0) {
+
+                    System.out.println(BRIGHT_GREEN);
+
+                    System.out.println(
+                            "   Profit          : +Rs."
+                            + difference);
+
+                    System.out.println(
+                            "   Growth %        : +"
+                            + String.format("%.2f",
+                            growth)
+                            + "%");
+
+                    System.out.println(
+                            "   Market Trend    : BULLISH");
+
+                    System.out.println(RESET);
+                }
+
+                // NEGATIVE GROWTH
+                else if(difference < 0) {
+
+                    System.out.println(BRIGHT_RED);
+
+                    System.out.println(
+                            "   Loss            : Rs."
+                            + difference);
+
+                    System.out.println(
+                            "   Growth %        : "
+                            + String.format("%.2f",
+                            growth)
+                            + "%");
+
+                    System.out.println(
+                            "   Market Trend    : BEARISH");
+
+                    System.out.println(RESET);
+                }
+
+                // NO CHANGE
+                else {
+
+                    System.out.println(BRIGHT_YELLOW);
+
+                    System.out.println(
+                            "   No Price Change");
+
+                    System.out.println(
+                            "   Market Trend    : STABLE");
+
+                    System.out.println(RESET);
+                }
+
+                System.out.println(BRIGHT_GREEN);
+
+                System.out.println(
+                        "\n====================================================");
+
+                System.out.println(
+                        "         STOCK PRICE UPDATED SUCCESSFULLY");
+
+                System.out.println(
+                        "====================================================");
+
+                System.out.println(RESET);
+            }
+
+            // STOCK NOT FOUND
+            else {
+
+                System.out.println(BRIGHT_RED);
+
+                System.out.println(
+                        "\n====================================================");
+
+                System.out.println(
+                        "                STOCK NOT FOUND");
+
+                System.out.println(
+                        "====================================================");
+
+                System.out.println(RESET);
+            }
+        }
+
+        catch(Exception e) {
+
+            System.out.println(BRIGHT_RED);
+
+            System.out.println(
+                    "\n====================================================");
+
+            System.out.println(
+                    "                  SYSTEM ERROR");
+
+            System.out.println(
+                    "====================================================");
+
+            System.out.println(RESET);
+
+            System.out.println(BRIGHT_WHITE +
+                    "\n" + e + RESET);
+        }
+    }
+}
